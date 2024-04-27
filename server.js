@@ -1,11 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const UserModel = require('./modals/Users')
-
+const mongodbUri = process.env.MONGODB_URI;
 const app= express()
 app.use(cors(
     {
@@ -17,7 +17,7 @@ app.use(cors(
 app.use(express.json())
 app.use(cookieParser())
 
-mongoose.connect("mongodb+srv://deva:deva@mern.gizrqwt.mongodb.net/?retryWrites=true&w=majority&appName=MERN")
+mongoose.connect("mongodb+srv://deva:deva@mern.gizrqwt.mongodb.net/MERN")
 //add function
 
 app.post('/log',(req,res)=>
@@ -62,6 +62,8 @@ app.post("/user",(req,res)=>
        .catch(err=>res.json(err))
     }).catch(err=>res.json(err))
 })
+//add routes
+
 
 // view function
 app.get('/getUser',(req,res)=>
@@ -101,6 +103,7 @@ app.delete('/deleteUser/:id',(req,res)=>
     .then(users=>res.json(users))
     .catch(err => res.json(err))
 })
+
 app.listen(3001,()=>
 {
     console.log("server is Running")
