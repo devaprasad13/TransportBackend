@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const UserModel = require('./modals/Users')
-const mongodbUri = process.env.MONGODB_URI;
+const RouteModel = require('./modals/Routing')
+require('dotenv').config()
 const app= express()
 app.use(cors(
     {
@@ -62,7 +63,7 @@ app.post("/user",(req,res)=>
        .catch(err=>res.json(err))
     }).catch(err=>res.json(err))
 })
-//add routes
+
 
 
 // view function
@@ -103,7 +104,46 @@ app.delete('/deleteUser/:id',(req,res)=>
     .then(users=>res.json(users))
     .catch(err => res.json(err))
 })
+//Add Routes
 
+app.post("/rou", async (req, res) => {
+    
+    try
+    {
+         const newRoute = new RouteModel(req.body)
+         await newRoute.save();
+
+         res.status(200).json({message:"route add succesffully"})
+    }
+    catch(error)
+    {
+       console.log("Error",error)
+       res.status(500).json({error:"Failed to add route"})
+    }
+});
+//search result
+app.post("/it",async(req,res)=>
+{
+    try
+    {
+        const{from,to,bus} = req.body
+        const searchresult = await RouteModel.find(
+            {
+                from:from,
+                to:to,
+                bus:bus,
+            }
+        )
+        res.status(200).json(searchresult)
+        console.log(searchresult)
+    }
+    catch(error)
+    {
+
+        console.log("error",error)
+         res.status(500).json({erro:"Failed to add route"})
+    }
+})
 app.listen(3001,()=>
 {
     console.log("server is Running")
