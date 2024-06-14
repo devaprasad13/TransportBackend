@@ -1,23 +1,24 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const UserModel = require('./modals/Users')
-
+const RouteModel = require('./modals/Routing')
+require('dotenv').config()
 const app= express()
 app.use(cors(
     {
-        origin:["http://localhost:3000"],
+        origin:["http://localhost:3000","https://main-project-omega.vercel.app"],
         method:["GET","POST"],
         credentials:true,
     }
 ))
 app.use(express.json())
 app.use(cookieParser())
-
-mongoose.connect("mongodb+srv://deva:deva@mern.gizrqwt.mongodb.net/?retryWrites=true&w=majority&appName=MERN")
+const port = process.env.PORT || 3001
+mongoose.connect("mongodb+srv://deva:deva@mern.gizrqwt.mongodb.net/MERN")
 //add function
 
 app.post('/log',(req,res)=>
@@ -63,6 +64,8 @@ app.post("/user",(req,res)=>
     }).catch(err=>res.json(err))
 })
 
+
+
 // view function
 app.get('/getUser',(req,res)=>
 {
@@ -98,10 +101,52 @@ app.delete('/deleteUser/:id',(req,res)=>
 {
     const id = req.params.id;
     UserModel.findByIdAndDelete({_id:id})
-    .then(users=>res.json(users))
+    .then(users=>res.json(users).status(200))
     .catch(err => res.json(err))
 })
-app.listen(3001,()=>
+//Add Routes
+
+app.post("/rou", async (req, res) => {
+    
+    try
+    {
+         const newRoute = new RouteModel(req.body)
+         await newRoute.save();
+
+         res.status(200).json({message:"route add succesffully"})
+    }
+    catch(error)
+    {
+       console.log("Error",error)
+       res.status(500).json({error:"Failed to add route"})
+    }
+});
+//search result
+app.post("/it",async(req,res)=>
+{
+    try
+    {
+        const{from,to,bus} = req.body
+        const searchresult = await RouteModel.find(
+            {
+                from:from,
+                to:to,
+                bus:bus,
+            }
+        )
+        res.status(200).json(searchresult)
+        console.log(searchresult)
+    }
+    catch(error)
+    {
+
+        console.log("error",error)
+         res.status(500).json({erro:"Failed to add route"})
+    }
+})
+
+
+app.listen(port,()=>
 {
     console.log("server is Running")
 })
