@@ -101,7 +101,7 @@ app.delete('/deleteUser/:id',(req,res)=>
 {
     const id = req.params.id;
     UserModel.findByIdAndDelete({_id:id})
-    .then(users=>res.json(users))
+    .then(users=>res.json(users).status(200))
     .catch(err => res.json(err))
 })
 //Add Routes
@@ -144,6 +144,8 @@ app.post("/it",async(req,res)=>
          res.status(500).json({erro:"Failed to add route"})
     }
 })
+
+
 app.listen(3001,()=>
 {
     console.log("server is Running")
