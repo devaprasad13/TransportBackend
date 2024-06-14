@@ -10,14 +10,14 @@ require('dotenv').config()
 const app= express()
 app.use(cors(
     {
-        origin:["http://localhost:3000"],
+        origin:["http://localhost:3000","https://main-project-omega.vercel.app"],
         method:["GET","POST"],
         credentials:true,
     }
 ))
 app.use(express.json())
 app.use(cookieParser())
-
+const port = process.env.PORT || 3001
 mongoose.connect("mongodb+srv://deva:deva@mern.gizrqwt.mongodb.net/MERN")
 //add function
 
@@ -146,7 +146,7 @@ app.post("/it",async(req,res)=>
 })
 
 
-app.listen(3001,()=>
+app.listen(port,()=>
 {
     console.log("server is Running")
 })
