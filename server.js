@@ -146,6 +146,22 @@ app.post("/it",async(req,res)=>
 })
 
 
+//count
+app.get('/count', async (req,res)=> 
+{
+    try
+    {
+        const counter = await UserModel.countDocuments();
+        res.json({counter});
+        
+    }
+    catch(err)
+    {
+        res.status(500).json({error:err.message})  
+    }
+ 
+})
+
 app.listen(port,()=>
 {
     console.log("server is Running")
